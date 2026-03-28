@@ -66,6 +66,7 @@ th, td {
       <th>Precio</th>
       <th>Cantidad</th>
       <th>Total</th>
+      <th>Acciones</th>
     </tr>
   </thead>
   <tbody id="tablaVentas"></tbody>
@@ -78,9 +79,8 @@ import {
   signOut
 } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
 
-// CONFIG FIREBASE (la misma que ya tienes)
 const firebaseConfig = {
-  apiKey: "AIzaSyAQaPII0Dz2XxBM7srufScwhY0M56VzUEA",
+  apiKey: "TU_API_KEY",
   authDomain: "ventas-app-pro-63a8c.firebaseapp.com",
   projectId: "ventas-app-pro-63a8c",
   storageBucket: "ventas-app-pro-63a8c.firebasestorage.app",
@@ -91,7 +91,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-// AGREGAR VENTAS (LOCAL)
+// AGREGAR VENTA
 window.agregarVenta = () => {
   const producto = document.getElementById("producto").value;
   const precio = parseFloat(document.getElementById("precio").value);
@@ -103,17 +103,50 @@ window.agregarVenta = () => {
   }
 
   const total = precio * cantidad;
-
   const tabla = document.getElementById("tablaVentas");
 
-  tabla.innerHTML += `
-    <tr>
-      <td>${producto}</td>
-      <td>$${precio}</td>
-      <td>${cantidad}</td>
-      <td>$${total}</td>
-    </tr>
+  const fila = document.createElement("tr");
+
+  fila.innerHTML = `
+    <td>${producto}</td>
+    <td>$${precio}</td>
+    <td>${cantidad}</td>
+    <td>$${total}</td>
+    <td>
+      <button onclick="editarVenta(this)">Editar</button>
+      <button onclick="eliminarVenta(this)">Eliminar</button>
+    </td>
   `;
+
+  tabla.appendChild(fila);
+
+  // Limpiar inputs
+  document.getElementById("producto").value = "";
+  document.getElementById("precio").value = "";
+  document.getElementById("cantidad").value = "";
+};
+
+// ELIMINAR
+window.eliminarVenta = (btn) => {
+  if (confirm("¿Eliminar este producto?")) {
+    const fila = btn.parentNode.parentNode;
+    fila.remove();
+  }
+};
+
+// EDITAR
+window.editarVenta = (btn) => {
+  const fila = btn.parentNode.parentNode;
+
+  const producto = fila.children[0].innerText;
+  const precio = fila.children[1].innerText.replace("$", "");
+  const cantidad = fila.children[2].innerText;
+
+  document.getElementById("producto").value = producto;
+  document.getElementById("precio").value = precio;
+  document.getElementById("cantidad").value = cantidad;
+
+  fila.remove();
 };
 
 // CERRAR SESIÓN
