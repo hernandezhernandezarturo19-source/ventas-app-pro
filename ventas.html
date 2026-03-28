@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Sistema de Ventas</title>
+
+<style>
+body {
+  font-family: Arial;
+  background: #f2f2f2;
+  padding: 20px;
+}
+
+h2 {
+  text-align: center;
+}
+
+.form {
+  background: white;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+}
+
+input {
+  margin: 5px;
+  padding: 10px;
+}
+
+button {
+  padding: 10px;
+  margin: 5px;
+  cursor: pointer;
+}
+
+table {
+  width: 100%;
+  background: white;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 10px;
+  border: 1px solid #ccc;
+}
+</style>
+</head>
+
+<body>
+
+<h2>Ventas</h2>
+
+<div class="form">
+  <input type="text" id="producto" placeholder="Producto">
+  <input type="number" id="precio" placeholder="Precio">
+  <input type="number" id="cantidad" placeholder="Cantidad">
+  
+  <button onclick="agregarVenta()">Agregar</button>
+  <button onclick="cerrarSesion()">Cerrar Sesión</button>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Producto</th>
+      <th>Precio</th>
+      <th>Cantidad</th>
+      <th>Total</th>
+    </tr>
+  </thead>
+  <tbody id="tablaVentas"></tbody>
+</table>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+import {
+  getAuth,
+  signOut
+} from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+
+// CONFIG FIREBASE (la misma que ya tienes)
+const firebaseConfig = {
+  apiKey: "AIzaSyAQaPII0Dz2XxBM7srufScwhY0M56VzUEA",
+  authDomain: "ventas-app-pro-63a8c.firebaseapp.com",
+  projectId: "ventas-app-pro-63a8c",
+  storageBucket: "ventas-app-pro-63a8c.firebasestorage.app",
+  messagingSenderId: "564903744439",
+  appId: "1:564903744439:web:143f951bd71adf7eb6ce32"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+// AGREGAR VENTAS (LOCAL)
+window.agregarVenta = () => {
+  const producto = document.getElementById("producto").value;
+  const precio = parseFloat(document.getElementById("precio").value);
+  const cantidad = parseInt(document.getElementById("cantidad").value);
+
+  if (!producto || !precio || !cantidad) {
+    alert("Completa todos los campos");
+    return;
+  }
+
+  const total = precio * cantidad;
+
+  const tabla = document.getElementById("tablaVentas");
+
+  tabla.innerHTML += `
+    <tr>
+      <td>${producto}</td>
+      <td>$${precio}</td>
+      <td>${cantidad}</td>
+      <td>$${total}</td>
+    </tr>
+  `;
+};
+
+// CERRAR SESIÓN
+window.cerrarSesion = async () => {
+  await signOut(auth);
+  alert("Sesión cerrada");
+  window.location.href = "index.html";
+};
+</script>
+
+</body>
+</html>
